@@ -8,7 +8,7 @@ import socket
 
 
 @discoverable
-class Sockets(Block):
+class TCP_Sockets(Block):
 
     IP_addr = StringProperty(title='IP Address', default='127.0.0.1')
     message = StringProperty(title='Message', default='GET / HTTP/1.1')
