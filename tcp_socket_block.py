@@ -28,13 +28,12 @@ class TCPSocket(Block):
                 being delivered to
         """
         for signal in signals:
-            pass
-        self.tcp_client()
+            msg = self.message(signal).encode('utf-8')
+            self.tcp_client(msg)
 
-    def tcp_client(self):
+    def tcp_client(self, msg):
         buffer_size = 8192
-        msg = self.message().encode('utf-8')
-        if self.add_newline:
+        if self.add_newline():
             msg += bytes([10])
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((self.IP_addr(),self.port()))
