@@ -1,4 +1,4 @@
-Example
+TCPSocket
 ===========
 
 This block opens a client TCP streaming socket on the selected ip address and port.
