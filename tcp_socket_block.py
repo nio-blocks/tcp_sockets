@@ -8,7 +8,7 @@ import socket
 
 
 @discoverable
-class TCP_Sockets(Block):
+class TCPSocket(Block):
 
     IP_addr = StringProperty(title='IP Address', default='127.0.0.1')
     message = StringProperty(title='Message', default='GET / HTTP/1.1')
@@ -29,9 +29,9 @@ class TCP_Sockets(Block):
         """
         for signal in signals:
             pass
-        self.TCP_client()
+        self.tcp_client()
 
-    def TCP_client(self):
+    def tcp_client(self):
         buffer_size = 8192
         msg = self.message().encode('utf-8')
         if self.add_newline:
