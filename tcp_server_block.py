@@ -1,7 +1,7 @@
 from nio.block.base import Block
 from nio.signal.base import Signal
 from nio.util.discovery import discoverable
-from nio.properties import StringProperty, BoolProperty, IntProperty
+from nio.properties import StringProperty, BoolProperty, IntProperty, Property
 from nio.properties import VersionProperty
 from nio.util.threading.spawn import spawn
 from threading import Event
@@ -13,11 +13,8 @@ import socket
 class TCPserver(Block):
 
     IP_addr = StringProperty(title='IP Address', default='127.0.0.1')
-    # message = StringProperty(title='Message', default='GET / HTTP/1.1')
-    # add_newline = BoolProperty(title='Add newline?', default=True)
     response = StringProperty(title='Response', default='{{ $response }}')
-    addr_field = StringProperty(title='Client IP Field', default='{{ $client_addr }}')
-    port_field = StringProperty(title='Client Port Field', default='{{ $client_port }}')
+    client = Property(title='Client Host/Port', default='{{ $addr }}', visible=False)
     port = IntProperty(title='Port', default=80)
     version = VersionProperty('0.0.1')
 
@@ -28,12 +25,13 @@ class TCPserver(Block):
         self._kill = False
     
     def start(self):
+        super().start()
         spawn(self._tcp_server)
     
     def process_signals(self, signals):
         for signal in signals:
             resp = self.response(signal).encode('utf-8')
-            self.conn.sendto(resp, (self.addr_field(signal),int(self.port_field(signal))))
+            self.conn.sendto(resp, self.client(signal))
 
     def stop(self):
         self._kill = True
@@ -41,6 +39,7 @@ class TCPserver(Block):
             self.conn.close()
         self.s.close()
         self.logger.debug('closed connection, socket')
+        super().stop()
             
     def _tcp_server(self):
         self.logger.debug('started server thread')
@@ -51,17 +50,6 @@ class TCPserver(Block):
             self.s.listen(1)
             self.logger.debug('listening for connections')
             self.conn, addr = self.s.accept()
-            self.logger.debug(str(addr) + ' connected')
+            self.logger.debug('{} connected'.format(addr))
             data = self.conn.recv(1024).decode()
-            try:
-                self.notify_signals(
-                    [Signal(
-                        {"data":data,
-                        "client_addr":addr[0],
-                        "client_port":addr[1]})])
-
-            except:
-                self.logger.exception(
-                    'Notify signals failed, received: {}'.format(data))
-
-
+            self.notify_signals([Signal({"data": data, "addr": addr})])
