@@ -28,7 +28,7 @@ class TCPserver(Block):
     def start(self):
         spawn(self._tcp_server)
     
-    # def process_signals(self, signals):
+    def process_signals(self, signals):
         # """Overrideable method to be called when signals are delivered.
         # This method will be called by the block router whenever signals
         # are sent to the block. The method should not return the modified
@@ -39,9 +39,9 @@ class TCPserver(Block):
             # input_id: The identifier of the input terminal the signals are
                 # being delivered to
         # """
-        # for signal in signals:
-            # msg = self.message(signal).encode('utf-8')
-            # self.tcp_client(msg)
+        for signal in signals:
+            resp = self.response(signal).encode('utf-8')
+            self.conn.send(resp)
 
     def stop(self):
         self._kill = True
@@ -67,10 +67,10 @@ class TCPserver(Block):
                         {"data":data.encode('utf-8'),
                         "client_addr":addr[0],
                         "client_port":addr[1]})])
-                if self.response():
-                    self.logger.debug(
-                        'sending response <{}>'.format(self.response()))
-                    self.conn.send(bytes(self.response(), 'utf-8'))
+                # if self.response():
+                    # self.logger.debug(
+                        # 'sending response <{}>'.format(self.response()))
+                    # self.conn.send(bytes(self.response(), 'utf-8'))
             except:
                 self.logger.exception(
                     'Notify signals failed, received: {}'.format(data))
