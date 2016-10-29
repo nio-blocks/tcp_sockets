@@ -31,25 +31,29 @@ class TCPserver(Block):
     def process_signals(self, signals):
         for signal in signals:
             resp = self.response(signal).encode('utf-8')
-            self.conn.sendto(resp, self.client(signal))
+            # self.conn.sendto(resp, self.client(signal))
+            self.s.sendto(resp, self.client(signal))
+            self.logger.debug('sent response {}'.format(resp))
 
     def stop(self):
         self._kill = True
         if self.conn:
             self.conn.close()
+            self.logger.debug('closed connection')
         self.s.close()
-        self.logger.debug('closed connection, socket')
+        self.logger.debug('closed socket')
         super().stop()
             
     def _tcp_server(self):
         self.logger.debug('started server thread')
         buffer_size = 8192
-        self.s = socket.socket()
+        # self.s = socket.socket()
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.bind((self.IP_addr(),self.port()))
         while self._kill == False:
             self.s.listen(1)
             self.logger.debug('listening for connections')
             self.conn, addr = self.s.accept()
             self.logger.debug('{} connected'.format(addr))
-            data = self.conn.recv(1024).decode()
+            data = self.conn.recv(buffer_size).decode()
             self.notify_signals([Signal({"data": data, "addr": addr})])
