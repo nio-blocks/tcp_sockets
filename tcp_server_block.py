@@ -32,8 +32,11 @@ class TCPserver(Block):
         for signal in signals:
             resp = self.response(signal).encode('utf-8')
             # self.conn.sendto(resp, self.client(signal))
-            self.s.sendto(resp, self.client(signal))
-            self.logger.debug('sent response {}'.format(resp))
+            try:
+                self.s.sendto(resp, self.client(signal))
+                self.logger.debug('sent response {}'.format(resp))
+            except:
+                self.logger.exception('remote client disconnected')
 
     def stop(self):
         self._kill = True
@@ -56,4 +59,5 @@ class TCPserver(Block):
             self.conn, addr = self.s.accept()
             self.logger.debug('{} connected'.format(addr))
             data = self.conn.recv(buffer_size).decode()
-            self.notify_signals([Signal({"data": data, "addr": addr})])
+            if data:
+                self.notify_signals([Signal({"data": data, "addr": addr})])
