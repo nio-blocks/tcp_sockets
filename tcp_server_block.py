@@ -13,9 +13,8 @@ class TCPserver(Block):
 
     IP_addr = StringProperty(title='IP Address', default='127.0.0.1')
     response = StringProperty(title='Response', default='{{ $response }}')
-    client = Property(title='Client Host/Port', default='{{ $addr }}',
-                      visible=False)
-    port = IntProperty(title='Port', default=80)
+    client = Property(title='Client IP/Port', default='{{ $addr }}')
+    port = IntProperty(title='Port', default=50001)
     version = VersionProperty('0.0.1')
 
     def __init__(self):

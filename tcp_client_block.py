@@ -13,7 +13,7 @@ class TCPclient(Block):
     IP_addr = StringProperty(title='IP Address', default='127.0.0.1')
     message = StringProperty(title='Message', default='GET / HTTP/1.1')
     add_newline = BoolProperty(title='Add newline?', default=True)
-    port = IntProperty(title='Port', default=80)
+    port = IntProperty(title='Port', default=50001)
     version = VersionProperty('0.0.1')
 
     def process_signals(self, signals):
