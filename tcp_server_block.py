@@ -34,8 +34,7 @@ class TCPserver(Block):
                 self.conn.sendto(resp, self.client(signal))
                 self.logger.debug('sent response {}'.format(resp))
             except:
-                self.logger.exception('failed to send response, remote cient \
-                                       disconnected')
+                self.logger.exception('failed to send response')
 
     def stop(self):
         self._kill = True
@@ -50,9 +49,9 @@ class TCPserver(Block):
         self.logger.debug('started server thread')
         buffer_size = 8192
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.bind((self.IP_addr(),self.port()))
+        self.s.bind((self.IP_addr(), self.port()))
+        self.s.listen(1)
         while self._kill == False:
-            self.s.listen(1)
             self.logger.debug('listening for connections')
             self.conn, addr = self.s.accept()
             self.logger.debug('{} connected'.format(addr))
