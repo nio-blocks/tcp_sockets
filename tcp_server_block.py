@@ -5,7 +5,6 @@ from nio.properties import StringProperty, BoolProperty, IntProperty, Property
 from nio.properties import VersionProperty
 from nio.util.threading.spawn import spawn
 from threading import Event
-
 import socket
 
 
@@ -14,7 +13,8 @@ class TCPserver(Block):
 
     IP_addr = StringProperty(title='IP Address', default='127.0.0.1')
     response = StringProperty(title='Response', default='{{ $response }}')
-    client = Property(title='Client Host/Port', default='{{ $addr }}', visible=False)
+    client = Property(title='Client Host/Port', default='{{ $addr }}',
+                      visible=False)
     port = IntProperty(title='Port', default=80)
     version = VersionProperty('0.0.1')
 
@@ -23,20 +23,20 @@ class TCPserver(Block):
         self.conn = None
         self.s = None
         self._kill = False
-    
+
     def start(self):
         super().start()
         spawn(self._tcp_server)
-    
+
     def process_signals(self, signals):
         for signal in signals:
             resp = self.response(signal).encode('utf-8')
-            # self.conn.sendto(resp, self.client(signal))
             try:
-                self.s.sendto(resp, self.client(signal))
+                self.conn.sendto(resp, self.client(signal))
                 self.logger.debug('sent response {}'.format(resp))
             except:
-                self.logger.exception('remote client disconnected')
+                self.logger.exception('failed to send response, remote cient \
+                                       disconnected')
 
     def stop(self):
         self._kill = True
@@ -46,11 +46,10 @@ class TCPserver(Block):
         self.s.close()
         self.logger.debug('closed socket')
         super().stop()
-            
+
     def _tcp_server(self):
         self.logger.debug('started server thread')
         buffer_size = 8192
-        # self.s = socket.socket()
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.bind((self.IP_addr(),self.port()))
         while self._kill == False:
