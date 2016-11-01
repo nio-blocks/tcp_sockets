@@ -51,10 +51,18 @@ class TCPserver(Block):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.bind((self.IP_addr(), self.port()))
         self.s.listen(1)
+        self.logger.debug('listening for connections')
+        self.conn, addr = self.s.accept()
+        self.logger.debug('{} connected'.format(addr))
         while self._kill == False:
-            self.logger.debug('listening for connections')
-            self.conn, addr = self.s.accept()
-            self.logger.debug('{} connected'.format(addr))
             data = self.conn.recv(buffer_size).decode()
             if data:
                 self.notify_signals([Signal({"data": data, "addr": addr})])
+            if not data:
+                self.logger.debug('no data, breaking')
+                self.conn.close()
+                self.logger.debug('closed connection')
+                self.s.close()
+                self.logger.debug('closed socket')
+                break
+        _tcp_server()
