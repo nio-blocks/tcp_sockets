@@ -38,6 +38,21 @@ class TCPserver(Block):
         self._kill = True
         super().stop()
 
+    def _recv(self, conn, addr, buffer_size):
+        self.logger.debug('recv called')
+        with conn:
+            while self._kill == False:
+                data = conn.recv(buffer_size)
+                self.logger.debug('received data {}'.format(data))
+                if data:
+                    self.notify_signals([Signal(
+                        {"data": data, "addr": addr})])
+                if not data:
+                    self.logger.debug(
+                        'connection closed by remote client '
+                        '{}'.format(addr))
+                    break
+
     def _tcp_server(self):
         self.logger.debug('started server thread')
         buffer_size = 1024
@@ -48,15 +63,4 @@ class TCPserver(Block):
                 self.logger.debug('listening for connections')
                 conn, addr = s.accept()
                 self.logger.debug('{} connected'.format(addr))
-                with conn:
-                    while self._kill == False:
-                        data = conn.recv(buffer_size)
-                        self.logger.debug('received data {}'.format(data))
-                        if data:
-                            self.notify_signals([Signal(
-                                {"data": data, "addr": addr})])
-                        if not data:
-                            self.logger.debug(
-                                'connection closed by remote client '
-                                '{}'.format(addr))
-                            break
+                self._recv(conn, addr, buffer_size)
