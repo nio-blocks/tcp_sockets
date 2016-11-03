@@ -2,13 +2,13 @@ from nio.block.terminals import DEFAULT_TERMINAL
 from nio.signal.base import Signal
 from nio.testing.block_test_case import NIOBlockTestCase
 from unittest.mock import patch, MagicMock
-from ..tcp_server_block import TCPserver
+from ..tcp_streamer_block import TCPStreamer
 
 
-class TestTCPserver(NIOBlockTestCase):
+class TestTCPStreamer(NIOBlockTestCase):
 
     def test_default_configurations(self):
-        blk = TCPserver()
+        blk = TCPStreamer()
         self.configure_block(blk, {})
         with patch('socket.socket') as mock_socket:
             mock_connect = MagicMock()
@@ -32,7 +32,7 @@ class TestTCPserver(NIOBlockTestCase):
             })
 
     def test_other_configurations(self):
-        blk = TCPserver()
+        blk = TCPStreamer()
         self.configure_block(blk, {'host': '1.2.3.4', 'port': 12345})
         with patch('socket.socket') as mock_socket:
             mock_socket.return_value.__enter__.return_value.\
