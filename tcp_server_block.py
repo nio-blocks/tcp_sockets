@@ -4,42 +4,31 @@ from nio.util.discovery import discoverable
 from nio.properties import StringProperty, BoolProperty, IntProperty, Property
 from nio.properties import VersionProperty
 from nio.util.threading.spawn import spawn
-from threading import Event
 import socket
 
 
 @discoverable
 class TCPserver(Block):
 
-    IP_addr = StringProperty(title='IP Address', default='127.0.0.1')
-    response = StringProperty(title='Response', default='{{ $response }}')
-    client = Property(title='Client IP/Port', default='{{ $addr }}')
+    host = StringProperty(title='IP Address', default='127.0.0.1')
     port = IntProperty(title='Port', default=50001)
     version = VersionProperty('0.0.1')
 
     def __init__(self):
         super().__init__()
+        self._thread = None
         self._kill = False
 
     def start(self):
         super().start()
-        spawn(self._tcp_server)
-
-    # def process_signals(self, signals):
-        # for signal in signals:
-            # resp = self.response(signal).encode('utf-8')
-            # try:
-                # self.conn.sendto(resp, self.client(signal))
-                # self.logger.debug('sent response {}'.format(resp))
-            # except:
-                # self.logger.exception('failed to send response')
+        self._thread = spawn(self._tcp_server)
 
     def stop(self):
         self._kill = True
+        self._thread.join(1)
         super().stop()
 
     def _recv(self, conn, addr, buffer_size):
-        self.logger.debug('recv called')
         with conn:
             while self._kill == False:
                 data = conn.recv(buffer_size)
@@ -57,7 +46,7 @@ class TCPserver(Block):
         self.logger.debug('started server thread')
         buffer_size = 1024
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.bind((self.IP_addr(), self.port()))
+            s.bind((self.host(), self.port()))
             s.listen(1)
             while self._kill == False:
                 self.logger.debug('listening for connections')
