@@ -54,4 +54,3 @@ class TCPStreamer(Block):
                 conn, addr = s.accept()
                 self.logger.debug('{} connected'.format(addr))
                 self._recv(conn, addr, buffer_size)
-                
