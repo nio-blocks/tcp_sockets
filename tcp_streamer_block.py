@@ -10,6 +10,7 @@ import socket
 @discoverable
 class TCPStreamer(Block):
 
+
     host = StringProperty(title='IP Address', default='127.0.0.1')
     port = IntProperty(title='Port', default=50001)
     version = VersionProperty('0.0.1')
