@@ -31,7 +31,7 @@ This block will output a 'response' signal containing the response from the sock
 TCPStreamer
 ===========
 
-This block binds a streaming TCP Server socket on the selected IP address and port. Spawns thread to listen for new remote connections with a backlog queue of 1.
+This block binds a streaming TCP Server socket on the selected IP address and port. Spawns thread to listen for new remote connections with a backlog queue of 1. Does not send responses to remote clients.
 
 Properties
 --------------
