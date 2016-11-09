@@ -25,3 +25,33 @@ Upon receipt of any input signal this block will open a socket connection, send 
 Output
 ---------
 This block will output a 'response' signal containing the response from the socket up to 8192 bytes.
+
+
+
+TCPStreamer
+===========
+
+This block binds a streaming TCP Server socket on the selected IP address and port. Spawns thread to listen for new remote connections with a backlog queue of 1. Does not send responses to remote clients.
+
+Properties
+--------------
+-   **IP Address**: IP address to bind server
+-   **port**: Port to bind server
+
+Dependencies
+----------------
+None
+
+Commands
+----------------
+None
+
+Input
+-------
+None
+
+Output
+---------
+Notifies one signal for each received packet (up to 1024 bytes).
+-   `data`: Bytefield of packet received
+-   `addr`: Tuple of remote client's address and port

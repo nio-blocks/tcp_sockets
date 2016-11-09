@@ -2,12 +2,12 @@ from nio.block.terminals import DEFAULT_TERMINAL
 from nio.signal.base import Signal
 from nio.testing.block_test_case import NIOBlockTestCase
 from ..tcp_socket_block import TCPSocket
-
 from unittest.mock import MagicMock, patch
 import socket
 
 
 class TestExample(NIOBlockTestCase):
+
 
     @patch('socket.socket')
     def test_default_configurations(self, mock_socket):
@@ -18,7 +18,7 @@ class TestExample(NIOBlockTestCase):
         self.configure_block(blk, {})
         blk.start()
         blk.process_signals([Signal({"hello": "n.io"})])
-        mock_socket.return_value.connect.assert_called_with(('127.0.0.1',80))
+        mock_socket.return_value.connect.assert_called_with(('127.0.0.1',50001))
         mock_socket.return_value.send.assert_called_with(b"GET / HTTP/1.1\n")
         blk.stop()
         self.assert_num_signals_notified(1)
