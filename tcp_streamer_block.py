@@ -1,15 +1,12 @@
-from nio.block.base import Block
-from nio.signal.base import Signal
-from nio.util.discovery import discoverable
-from nio.properties import StringProperty, BoolProperty, IntProperty, Property
-from nio.properties import VersionProperty
-from nio.util.threading.spawn import spawn
 import socket
 
+from nio.block.base import Block
+from nio.properties import StringProperty, IntProperty, VersionProperty
+from nio.signal.base import Signal
+from nio.util.threading.spawn import spawn
 
-@discoverable
+
 class TCPStreamer(Block):
-
 
     host = StringProperty(title='IP Address', default='127.0.0.1')
     port = IntProperty(title='Port', default=50001)
