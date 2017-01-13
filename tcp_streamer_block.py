@@ -66,7 +66,7 @@ class TCPStreamer(Block):
                     # closing the connection should cause the thread used by
                     # that connection to exit
                     self._conn_dict[addr].close()
-                    self._conn_dict.update[addr] = conn
+                    self._conn_dict[addr] = conn
 
                 self.logger.debug('{} connected'.format(addr))
 
