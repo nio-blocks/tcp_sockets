@@ -16,6 +16,7 @@ class TCPStreamer(Block):
         super().__init__()
         self._thread = None
         self._kill = False
+        self._conn_dict = {}
 
     def start(self):
         super().start()
@@ -29,6 +30,7 @@ class TCPStreamer(Block):
     def _recv(self, conn, addr, buffer_size):
         with conn:
             while self._kill == False:
+                self.logger.debug('waiting for data from addr {}'.format(addr))
                 data = conn.recv(buffer_size)
                 self.logger.debug('received data {}'.format(data))
                 if data:
@@ -38,6 +40,7 @@ class TCPStreamer(Block):
                     self.logger.debug(
                         'connection closed by remote client '
                         '{}'.format(addr))
+                    self._conn_dict.pop(addr)
                     break
 
     def _tcp_server(self):
@@ -49,5 +52,22 @@ class TCPStreamer(Block):
             while self._kill == False:
                 self.logger.debug('listening for connections')
                 conn, addr = s.accept()
+
+                # keep track of all accepted connections
+                if addr not in self._conn_dict:
+                    # new connection
+                    self._conn_dict.update({addr: conn})
+                else:
+                    # the address has already been connected to, and it never
+                    # closed itself (likely due to power loss).
+                    # Tear down the old connection and make a new one on the
+                    # same address
+
+                    # closing the connection should cause the thread used by
+                    # that connection to exit
+                    self._conn_dict[addr].close()
+                    self._conn_dict.update[addr] = conn
+
                 self.logger.debug('{} connected'.format(addr))
-                self._recv(conn, addr, buffer_size)
+
+                spawn(self._recv, conn, addr, buffer_size)
