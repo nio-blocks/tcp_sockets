@@ -18,7 +18,7 @@ class TCPStreamer(Block):
         super().__init__()
         self._thread = None
         self._kill = False
-        self._conn_dict = {}
+        self._connections = {}
 
     def start(self):
         super().start()
@@ -42,7 +42,7 @@ class TCPStreamer(Block):
                     self.logger.debug(
                         'connection closed by remote client '
                         '{}'.format(addr))
-                    self._conn_dict.pop(addr[0])
+                    self._connections.pop(addr[0])
                     break
 
     def _tcp_server(self):
@@ -56,9 +56,9 @@ class TCPStreamer(Block):
                 conn, addr = s.accept()
 
                 # keep track of all accepted connections
-                if addr[0] not in self._conn_dict:
+                if addr[0] not in self._connections:
                     # new connection
-                    self._conn_dict.update({addr[0]: conn})
+                    self._connections.update({addr[0]: conn})
                 else:
                     # the address has already been connected to, and it never
                     # closed itself (likely due to power loss).
@@ -70,14 +70,14 @@ class TCPStreamer(Block):
                     self.logger.debug('Accepted a connection from an address '
                                       'already in use: {}, closing connection '
                                       'object: {}'
-                                      .format(addr[0], self._conn_dict[addr[0]]))
-                    self._conn_dict[addr[0]].shutdown(1)
-                    self._conn_dict[addr[0]].close()
-                    self._conn_dict[addr[0]] = conn
+                                      .format(addr[0], self._connections[addr[0]]))
+                    self._connections[addr[0]].shutdown(1)
+                    self._connections[addr[0]].close()
+                    self._connections[addr[0]] = conn
 
                 self.logger.debug('{} connected'.format(addr))
 
                 spawn(self._recv, conn, addr, buffer_size)
 
     def _list_connections(self):
-        return self._conn_dict
+        return self._connections
