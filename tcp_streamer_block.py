@@ -72,7 +72,6 @@ class TCPStreamer(Block):
                                       'already in use: {}, closing connection '
                                       'object: {}'
                                       .format(host, self._connections[host]))
-                    self._connections[host].shutdown(1)
                     self._connections[host].close()
                     self._connections[host] = conn
 
