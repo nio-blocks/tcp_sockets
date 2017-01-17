@@ -54,11 +54,12 @@ class TCPStreamer(Block):
             while self._kill == False:
                 self.logger.debug('listening for connections')
                 conn, addr = s.accept()
+                host = addr[0]
 
                 # keep track of all accepted connections
-                if addr[0] not in self._connections:
+                if host not in self._connections:
                     # new connection
-                    self._connections.update({addr[0]: conn})
+                    self._connections.update({host: conn})
                 else:
                     # the address has already been connected to, and it never
                     # closed itself (likely due to power loss).
@@ -70,10 +71,10 @@ class TCPStreamer(Block):
                     self.logger.debug('Accepted a connection from an address '
                                       'already in use: {}, closing connection '
                                       'object: {}'
-                                      .format(addr[0], self._connections[addr[0]]))
-                    self._connections[addr[0]].shutdown(1)
-                    self._connections[addr[0]].close()
-                    self._connections[addr[0]] = conn
+                                      .format(host, self._connections[host]))
+                    self._connections[host].shutdown(1)
+                    self._connections[host].close()
+                    self._connections[host] = conn
 
                 self.logger.debug('{} connected'.format(addr))
 
