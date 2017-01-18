@@ -45,6 +45,9 @@ class TCPStreamer(Block):
                     self._connections.pop(addr[0])
                     break
 
+        self.logger.error('popped and closed the connection in _recv for host '
+                          '{}'.format(addr[0]))
+
     def _tcp_server(self):
         self.logger.debug('started server thread')
         buffer_size = 1024
@@ -59,7 +62,8 @@ class TCPStreamer(Block):
                 # keep track of all accepted connections
                 if host not in self._connections:
                     # new connection
-                    self._connections.update({host: conn})
+                    self._connections[host] = {'connection': conn,
+                                               'recv_thread': None}
                 else:
                     # the address has already been connected to, and it never
                     # closed itself (likely due to power loss).
@@ -72,12 +76,14 @@ class TCPStreamer(Block):
                                       'already in use: {}, closing connection '
                                       'object: {}'
                                       .format(host, self._connections[host]))
-                    self._connections[host].close()
-                    self._connections[host] = conn
+                    self._connections[host]['connection'].close()
+                    self._connections[host]['recv_thread'].join()
+                    self._connections[host]['connection'] = conn
 
                 self.logger.debug('{} connected'.format(addr))
 
-                spawn(self._recv, conn, addr, buffer_size)
+                recv_thread = spawn(self._recv, conn, addr, buffer_size)
+                self._connections[host]['recv_thread'] = recv_thread
 
     def _list_connections(self):
         return self._connections
