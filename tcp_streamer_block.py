@@ -16,18 +16,20 @@ class TCPStreamer(Block):
 
     def __init__(self):
         super().__init__()
-        self._thread = None
+        self._main_thread = None
         self._kill = False
         self._connections = {}
-        self._threads = {}
+        self._recv_threads = {}
 
     def start(self):
         super().start()
-        self._thread = spawn(self._tcp_server)
+        self._main_thread = spawn(self._tcp_server)
 
     def stop(self):
         self._kill = True
-        self._thread.join(1)
+        self._main_thread.join(1)
+        self._connections = {}
+        self._recv_threads = {}
         super().stop()
 
     def _recv(self, conn, addr, buffer_size):
@@ -78,7 +80,7 @@ class TCPStreamer(Block):
                                       .format(host, self._connections[host]))
                     self._connections[host].close()
                     try:
-                        self._threads[host].join()
+                        self._recv_threads[host].join()
                     except:
                         # thread may already be done
                         pass
@@ -87,7 +89,7 @@ class TCPStreamer(Block):
                 self.logger.debug('{} connected'.format(addr))
 
                 recv_thread = spawn(self._recv, conn, addr, buffer_size)
-                self._threads[host] = recv_thread
+                self._recv_threads[host] = recv_thread
 
     def _list_connections(self):
         return self._connections
