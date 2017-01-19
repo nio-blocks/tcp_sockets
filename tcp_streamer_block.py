@@ -27,7 +27,10 @@ class TCPStreamer(Block):
 
     def stop(self):
         self._kill = True
-        self._main_thread.join(1)
+        try:
+            self._main_thread.join(1)
+        except:
+            self.logger.warning('main thread had already exited before join')
         self._connections = {}
         self._recv_threads = {}
         super().stop()
@@ -82,8 +85,8 @@ class TCPStreamer(Block):
                     try:
                         self._recv_threads[host].join()
                     except:
-                        # thread may already be done
-                        pass
+                        self.logger.debug('recv thread already exited before '
+                                          'join')
                     self._connections[host] = conn
 
                 self.logger.debug('{} connected'.format(addr))
