@@ -1,10 +1,6 @@
-import socket
-
 from nio.block.terminals import DEFAULT_TERMINAL
 from nio.testing.block_test_case import NIOBlockTestCase
 from unittest.mock import patch, MagicMock
-
-from nio.testing.modules.scheduler.scheduler import JumpAheadScheduler
 
 from ..tcp_streamer_block import TCPStreamer
 from time import sleep
@@ -64,11 +60,10 @@ class TestTCPStreamer(NIOBlockTestCase):
             mock_socket.return_value.__enter__.return_value.\
                 listen.assert_called_once_with(1)
 
-            sleep(1)
+            sleep(0.1)
             self.assertEqual(len(blk._connections), 0)
 
-            with self.assertRaises(Exception):
-                blk.stop()
+            blk.stop()
 
             # since no data is received, no signals should have been notified.
             self.assert_num_signals_notified(0)
@@ -84,7 +79,7 @@ class TestTCPStreamer(NIOBlockTestCase):
                                       (mock_connect, ('1.2.3.4', 12345))]
 
             blk.start()
-            sleep(1)
+            sleep(0.1)
 
             # this should always be one, as reconnect pops the old connection
             # and adds the new one on the same host
@@ -110,7 +105,7 @@ class TestTCPStreamer(NIOBlockTestCase):
                                       (mock_connect, ('2.3.4.5', 12000))]
 
             blk.start()
-            sleep(1)
+            sleep(0.1)
 
             self.assertEqual(len(blk._connections), 2)
             self.assertEqual(len(blk._recv_threads), 2)
