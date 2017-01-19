@@ -19,6 +19,7 @@ class TCPStreamer(Block):
         self._thread = None
         self._kill = False
         self._connections = {}
+        self._threads = {}
 
     def start(self):
         super().start()
@@ -62,8 +63,7 @@ class TCPStreamer(Block):
                 # keep track of all accepted connections
                 if host not in self._connections:
                     # new connection
-                    self._connections[host] = {'connection': conn,
-                                               'recv_thread': None}
+                    self._connections[host] = conn
                 else:
                     # the address has already been connected to, and it never
                     # closed itself (likely due to power loss).
@@ -76,14 +76,14 @@ class TCPStreamer(Block):
                                       'already in use: {}, closing connection '
                                       'object: {}'
                                       .format(host, self._connections[host]))
-                    self._connections[host]['connection'].close()
-                    self._connections[host]['recv_thread'].join()
-                    self._connections[host]['connection'] = conn
+                    self._connections[host].close()
+                    self._threads[host].join()
+                    self._connections[host] = conn
 
                 self.logger.debug('{} connected'.format(addr))
 
                 recv_thread = spawn(self._recv, conn, addr, buffer_size)
-                self._connections[host]['recv_thread'] = recv_thread
+                self._threads[host] = recv_thread
 
     def _list_connections(self):
         return self._connections
