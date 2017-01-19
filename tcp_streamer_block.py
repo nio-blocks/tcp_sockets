@@ -77,7 +77,11 @@ class TCPStreamer(Block):
                                       'object: {}'
                                       .format(host, self._connections[host]))
                     self._connections[host].close()
-                    self._threads[host].join()
+                    try:
+                        self._threads[host].join()
+                    except:
+                        # thread may already be done
+                        pass
                     self._connections[host] = conn
 
                 self.logger.debug('{} connected'.format(addr))
