@@ -56,7 +56,6 @@ class TCPAsynchClient(Block):
         
 
     def _receive(self):
-        # if remote host closes connection this loop runs out of control
         while not self._kill:
             data = self._conn.recv(self._buffer_size)
             if not data:
