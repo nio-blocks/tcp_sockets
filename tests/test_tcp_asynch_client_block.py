@@ -22,7 +22,7 @@ class TestTCPAsynchClient(NIOBlockTestCase):
         self.configure_block(blk, {
             'message': '{{ $hello }}\n',
             'host': '1.2.3.4',
-            'port': '1234'})
+            'port': '1234'}),
         blk.start()
         blk.process_signals([Signal({"hello": "n.io"})])
         mock_socket.return_value.connect.assert_called_with(('1.2.3.4', 1234))
@@ -38,5 +38,8 @@ class TestTCPAsynchClient(NIOBlockTestCase):
         blk.stop()
         self.assertDictEqual(
             self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
-            {"data": mock_socket.return_value.recv.return_value}
+            {
+                'data': mock_socket.return_value.recv.return_value,
+                'host': ('127.0.0.1', 50001),
+            }
         )
