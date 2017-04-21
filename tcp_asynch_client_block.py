@@ -39,7 +39,13 @@ class TCPAsynchClient(Block):
         for signal in signals:
             message = self.message(signal)
             self.logger.debug('sending {}'.format(message))
-            self._conn.send(message)
+            try:
+                self._conn.send(message)
+            except:
+                # reopen connection
+                self._main_thread.join(1)
+                self._main_thread = spawn(self._connect)
+                self._conn.send(message)
 
     def _connect(self):
         self._conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -53,4 +59,6 @@ class TCPAsynchClient(Block):
         # if remote host closes connection this loop runs out of control
         while not self._kill:
             data = self._conn.recv(self._buffer_size)
+            if not data:
+                break
             self.notify_signals(Signal({'data': data, 'host': self._host}))
