@@ -31,23 +31,25 @@ class TCPAsynchClient(Block):
             self._main_thread.join(1)
         except:
             self.logger.warning('main thread had already exited before join')
-        self._conn.shutdown(2)
-        self._conn.close()
+        if self._conn:
+            self._conn.shutdown(2)
+            self._conn.close()
+            self.logger.debug('Closed connection')
         super().stop()
 
     def process_signals(self, signals):
         for signal in signals:
             message = self.message(signal)
-            self.logger.debug('Sending {}'.format(message))
             try:
                 self._conn.send(message)
+                self.logger.debug('Sent {}'.format(message))
             except:
                 # reopen connection
-                self.logger.debug('Reconnecting ...')
                 self._main_thread.join(1)
                 self._main_thread = spawn(self._connect)
-                self.logger.debug('Sending {}'.format(message))
+                self.logger.debug('Reconnected')
                 self._conn.send(message)
+                self.logger.debug('Sent {}'.format(message))
 
     def _connect(self):
         self._conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -62,5 +64,9 @@ class TCPAsynchClient(Block):
             data = self._conn.recv(self._buffer_size)
             if not data:
                 self.logger.debug('Remote host closed connection')
+                self._conn = None
                 break
+            self.logger.debug('Received {} bytes from {}'.format(
+                len(data), self._host
+            ))
             self.notify_signals(Signal({'data': data, 'host': self._host}))
