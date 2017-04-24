@@ -37,7 +37,7 @@ class TCPAsynchClient(Block):
 
     def process_signals(self, signals):
         for signal in signals:
-            message = self.message(signal).encode('utf-8')
+            message = self.message(signal)
             self.logger.debug('Sending {}'.format(message))
             try:
                 self._conn.send(message)
