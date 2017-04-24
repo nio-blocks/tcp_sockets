@@ -26,7 +26,7 @@ class TestTCPAsynchClient(NIOBlockTestCase):
         blk.start()
         blk.process_signals([Signal({'hello': 'n.io'})])
         mock_socket.return_value.connect.assert_called_with(('1.2.3.4', 1234))
-        mock_socket.return_value.send.assert_called_with(b'n.io\n')
+        mock_socket.return_value.send.assert_called_with('n.io\n')
         blk.stop()
 
     @patch('socket.socket')
