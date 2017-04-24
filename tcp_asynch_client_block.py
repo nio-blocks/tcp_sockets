@@ -71,9 +71,7 @@ class TCPAsynchClient(Retry, Block):
                 self.logger.debug('Remote host closed connection')
                 self._conn = None
                 break
-            self.logger.debug('Received {} bytes from {}'.format(
-                len(data), self._host
-            ))
+            self.logger.debug('Received {}'.format(data))
             self.notify_signals(Signal({'data': data, 'host': self._host}))
 
     def _cleanup(self):
