@@ -2,12 +2,13 @@ import socket
 
 from nio.block.base import Block
 from nio.signal.base import Signal
-from nio.properties import StringProperty, BoolProperty, IntProperty, \
+from nio.properties import StringProperty, IntProperty, \
                            VersionProperty, Property
 from nio.util.threading.spawn import spawn
+from nio.block.mixins import Retry
 
 
-class TCPAsynchClient(Block):
+class TCPAsynchClient(Retry, Block):
 
     host = StringProperty(title='IP Address', default='127.0.0.1')
     message = Property(title='Message', default='GET / HTTP/1.1\n')
@@ -23,7 +24,9 @@ class TCPAsynchClient(Block):
         self._host = None
 
     def start(self):
-        self._main_thread = spawn(self._connect)
+        super().start()
+        self._connect()
+        self._main_thread = spawn(self._receive)
 
     def stop(self):
         self._kill = True
@@ -32,32 +35,34 @@ class TCPAsynchClient(Block):
         except:
             self.logger.warning('main thread had already exited before join')
         if self._conn:
-            self._conn.shutdown(2)
-            self._conn.close()
-            self.logger.debug('Closed connection')
+            self._cleanup()
         super().stop()
 
     def process_signals(self, signals):
         for signal in signals:
             message = self.message(signal)
-            try:
-                self._conn.send(message)
-                self.logger.debug('Sent {}'.format(message))
-            except:
-                # reopen connection
-                self._main_thread.join(1)
-                self._main_thread = spawn(self._connect)
-                self.logger.debug('Reconnected')
-                self._conn.send(message)
-                self.logger.debug('Sent {}'.format(message))
+            self.execute_with_retry(self._send, message)
+
+    def before_retry(self, *args, **kwargs):
+        self.logger.warning('Failed to send {}, reconnecting'.format(
+            args
+        ))
+        self._main_thread.join(1)
+        if self._conn:
+            self._cleanup()
+        self._connect()
+        self._main_thread = spawn(self._receive)
 
     def _connect(self):
         self._conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._host = (self.host(), self.port())
         self._conn.connect(self._host)
         self.logger.debug('Connected to {}'.format((self.host(), self.port())))
-        self._receive()
-        
+
+    def _send(self, message):
+        if not self._kill:
+            self._conn.send(message)
+            self.logger.debug('Sent {}'.format(message))
 
     def _receive(self):
         while not self._kill:
@@ -70,3 +75,8 @@ class TCPAsynchClient(Block):
                 len(data), self._host
             ))
             self.notify_signals(Signal({'data': data, 'host': self._host}))
+
+    def _cleanup(self):
+        self._conn.shutdown(2)
+        self._conn.close()
+        self.logger.debug('Closed connection')
