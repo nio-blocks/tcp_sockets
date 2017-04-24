@@ -37,14 +37,16 @@ class TCPAsynchClient(Block):
 
     def process_signals(self, signals):
         for signal in signals:
-            message = self.message(signal)
-            self.logger.debug('sending {}'.format(message))
+            message = self.message(signal).encode('utf-8')
+            self.logger.debug('Sending {}'.format(message))
             try:
                 self._conn.send(message)
             except:
                 # reopen connection
+                self.logger.debug('Reconnecting ...')
                 self._main_thread.join(1)
                 self._main_thread = spawn(self._connect)
+                self.logger.debug('Sending {}'.format(message))
                 self._conn.send(message)
 
     def _connect(self):
@@ -59,5 +61,6 @@ class TCPAsynchClient(Block):
         while not self._kill:
             data = self._conn.recv(self._buffer_size)
             if not data:
+                self.logger.debug('Remote host closed connection')
                 break
             self.notify_signals(Signal({'data': data, 'host': self._host}))

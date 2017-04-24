@@ -24,14 +24,14 @@ class TestTCPAsynchClient(NIOBlockTestCase):
             'host': '1.2.3.4',
             'port': '1234'}),
         blk.start()
-        blk.process_signals([Signal({"hello": "n.io"})])
+        blk.process_signals([Signal({'hello': 'n.io'})])
         mock_socket.return_value.connect.assert_called_with(('1.2.3.4', 1234))
-        mock_socket.return_value.send.assert_called_with(b"n.io\n")
+        mock_socket.return_value.send.assert_called_with(b'n.io\n')
         blk.stop()
 
     @patch('socket.socket')
     def test_receive_message(self, mock_socket):
-        mock_socket.return_value.recv.return_value = "message"
+        mock_socket.return_value.recv.return_value = 'message'
         blk = TCPAsynchClient()
         self.configure_block(blk, {})
         blk.start()
