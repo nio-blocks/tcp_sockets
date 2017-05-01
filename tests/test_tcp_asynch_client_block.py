@@ -3,6 +3,7 @@ from nio.block.terminals import DEFAULT_TERMINAL
 from nio.signal.base import Signal
 from nio.testing.block_test_case import NIOBlockTestCase
 from ..tcp_asynch_client_block import TCPAsynchClient
+from time import sleep
 
 
 class TestTCPAsynchClient(NIOBlockTestCase):
@@ -26,7 +27,6 @@ class TestTCPAsynchClient(NIOBlockTestCase):
                 MagicMock(),
             ]
             blk.start()
-            from time import sleep
             sleep(1.1)
             self.assertEqual(2, mock_socket.return_value.connect.call_count)
             mock_socket.return_value.connect.assert_called_with(
@@ -57,9 +57,8 @@ class TestTCPAsynchClient(NIOBlockTestCase):
             mock_socket.return_value.connect.side_effect = Exception
             blk.start()
             blk.process_signals([Signal({'hello': 'n.io'})])
-            mock_socket.return_value.connect.assert_called_with(
-                ('1.2.3.4', 1234))
-            mock_socket.return_value.send.assert_called_with('n.io\n')
+            sleep(1.1)
+            self.assertEqual(2, mock_socket.return_value.connect.call_count)
             blk.stop()
 
     def test_receive_message(self):
@@ -81,11 +80,17 @@ class TestTCPAsynchClient(NIOBlockTestCase):
         with patch('socket.socket') as mock_socket:
             blk = TCPAsynchClient()
             self.configure_block(blk, {'reconnect': True})
+            mock_socket.return_value.connect.side_effect = [
+                MagicMock(),
+                Exception,
+                MagicMock(),
+            ]
             mock_socket.return_value.recv.side_effect = [
                 b'',
                 b'message'
             ]
             blk.start()
+            sleep(1.1)
             self.assertDictEqual(
                 self.last_notified[DEFAULT_TERMINAL][0].to_dict(),
                 {
@@ -93,9 +98,7 @@ class TestTCPAsynchClient(NIOBlockTestCase):
                     'host': ('127.0.0.1', 50001),
                 }
             )
-            from time import sleep
-            sleep(1.1)
-            self.assertEqual(2, mock_socket.return_value.connect.call_count)
+            self.assertEqual(3, mock_socket.return_value.connect.call_count)
             self.assertDictEqual(
                 self.last_notified[DEFAULT_TERMINAL][1].to_dict(),
                 {
