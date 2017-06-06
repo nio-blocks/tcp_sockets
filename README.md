@@ -25,6 +25,7 @@ Output
 ------
 This block will output a 'response' signal containing the response from the socket up to 8192 bytes.
 
+***
 
 TCPStreamer
 ===========
