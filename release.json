@@ -1,12 +1,12 @@
 {
-  "nio/TCPStreamer": {
-    "Version": "1.0.0",
-    "Reference": "github.com/nio-blocks/tcp_sockets.git@v1.0.0",
-    "Language": "Python"
-  },
   "nio/TCPClient": {
-    "Version": "1.0.0",
-    "Reference": "github.com/nio-blocks/tcp_sockets.git@v1.0.0",
-    "Language": "Python"
+    "language": "Python",
+    "version": "0.0.1",
+    "reference": "github.com/nio-blocks/tcp_sockets.git@v0.0.1"
+  },
+  "nio/TCPStreamer": {
+    "language": "Python",
+    "version": "0.0.1",
+    "reference": "github.com/nio-blocks/tcp_sockets.git@v0.0.1"
   }
 }

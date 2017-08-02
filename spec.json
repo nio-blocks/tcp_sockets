@@ -1,45 +1,18 @@
 {
-    "nio/TCPStreamer": {
-        "Properties": {
-            "host": {
-                "description": "IP address to bind server"
-            },
-            "port": {
-                "description": "Port to bind server"
-            }
-        },
-        "Commands": {},
-        "Category": "Communication",
-        "Output": {
-            "Description": "Notifies one signal for each received packet (up to 1024 bytes).\n-   `data`: Bytefield of packet received\n-   `addr`: Tuple of remote client's address and port"
-        },
-        "Input": {
-            "Description": "None"
-        },
-        "Description": "This block binds a streaming TCP Server socket on the selected IP address and port. Spawns thread to listen for new remote connections with a backlog queue of 1. Does not send responses to remote clients.",
-        "Version": "1.0.0"
-    },
-    "nio/TCPClient": {
-        "Properties": {
-            "host": {
-                "description": "IP address to connect to."
-            },
-            "message": {
-                "description": "Message to send to the socket once connected."
-            },
-            "port": {
-                "description": "Port to connect on."
-            }
-        },
-        "Commands": {},
-        "Category": "Communication",
-        "Output": {
-            "Description": "This block will output a 'response' signal containing the response from the socket up to 8192 bytes."
-        },
-        "Input": {
-            "Description": "Upon receipt of any input signal this block will open a socket connection, send the message, and collect any response."
-        },
-        "Description": "This block opens a client TCP streaming socket on the selected ip address and port.",
-        "Version": "1.0.0"
-    }
+  "nio/TCPClient": {
+    "version": "0.0.1",
+    "description": "",
+    "inputs": {},
+    "outputs": {},
+    "properties": {},
+    "commands": {}
+  },
+  "nio/TCPStreamer": {
+    "version": "0.0.1",
+    "description": "",
+    "inputs": {},
+    "outputs": {},
+    "properties": {},
+    "commands": {}
+  }
 }
