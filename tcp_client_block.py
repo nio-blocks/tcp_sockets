@@ -1,4 +1,5 @@
 import socket
+
 from nio.block.base import Block
 from nio.properties import StringProperty, BoolProperty, IntProperty, \
     VersionProperty

@@ -18,7 +18,7 @@ class TestTCPStreamer(NIOBlockTestCase):
                 accept.return_value = (mock_connect, ('127.0.0.1', 50001))
             blk.start()
             # waiting for signal to be notified
-            from time import sleep; sleep(0.1)
+            sleep(0.1)
             blk.stop()
             mock_socket.return_value.__enter__.return_value.\
                 bind.assert_called_once_with(('127.0.0.1', 50001))

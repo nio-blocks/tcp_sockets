@@ -1,12 +1,17 @@
 {
+  "nio/TCPAsynchClient": {
+    "language": "Python",
+    "url": "git://github.com/nio-blocks/tcp_sockets.git",
+    "version": "0.0.1"
+  },
   "nio/TCPClient": {
     "language": "Python",
-    "version": "0.0.1",
-    "reference": "github.com/nio-blocks/tcp_sockets.git@v0.0.1"
+    "url": "git://github.com/nio-blocks/tcp_sockets.git",
+    "version": "0.0.1"
   },
   "nio/TCPStreamer": {
     "language": "Python",
-    "version": "0.0.1",
-    "reference": "github.com/nio-blocks/tcp_sockets.git@v0.0.1"
+    "url": "git://github.com/nio-blocks/tcp_sockets.git",
+    "version": "0.0.1"
   }
 }
