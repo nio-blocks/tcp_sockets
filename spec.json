@@ -1,18 +1,119 @@
 {
+  "nio/TCPAsynchClient": {
+    "version": "0.0.1",
+    "description": "On service start this block opens a client TCP streaming socket to the selected host address and port. Input signals will be sent to the remote host, while messaged received will be notified from the block.",
+    "properties": {
+      "host": {
+        "title": "IP Address",
+        "type": "StringType",
+        "description": "Host address to connect to",
+        "default": "127.0.0.1"
+      },
+      "message": {
+        "title": "Message",
+        "type": "Type",
+        "description": "Message to send to the connected server",
+        "default": "GET / HTTP/1.1\n"
+      },
+      "port": {
+        "title": "Port",
+        "type": "IntType",
+        "description": "Host port to connect to",
+        "default": 50001
+      },
+      "retry_options": {
+        "title": "Retry Options",
+        "type": "ObjectType",
+        "description": "Retry configuration for connection to the server",
+        "default": {
+          "indefinite": false,
+          "max_retry": 5,
+          "multiplier": 1,
+          "strategy": "linear"
+        }
+      }
+    },
+    "inputs": {
+      "default": {
+        "description": "Upon receipt of any input signal the evaluation of `message` will be sent to `host:port`."
+      }
+    },
+    "outputs": {
+      "default": {
+        "description": "This block will output a signal for every message received from the remote host with fields `host` and `data`, where `data` can be 8192 bytes."
+      }
+    },
+    "commands": {}
+  },
   "nio/TCPClient": {
     "version": "0.0.1",
-    "description": "",
-    "inputs": {},
-    "outputs": {},
-    "properties": {},
+    "description": "This block opens a client TCP streaming socket on the selected ip address and port.",
+    "properties": {
+      "expect_response": {
+        "title": "Expect response?",
+        "type": "BoolType",
+        "description": "Whether to expect a response from the server",
+        "default": true
+      },
+      "host": {
+        "title": "IP Address",
+        "type": "StringType",
+        "description": "Host address to connect to",
+        "default": "127.0.0.1"
+      },
+      "message": {
+        "title": "Message",
+        "type": "StringType",
+        "description": "Message to send to the connected server",
+        "default": "GET / HTTP/1.1\n"
+      },
+      "port": {
+        "title": "Port",
+        "type": "IntType",
+        "description": "Host port to connect to",
+        "default": 50001
+      }
+    },
+    "inputs": {
+      "default": {
+        "description": "Upon receipt of any input signal this block will open a socket connection, send the message, and collect any response."
+      }
+    },
+    "outputs": {
+      "default": {
+        "description": "This block will output a 'response' signal containing the response from the socket up to 8192 bytes."
+      }
+    },
     "commands": {}
   },
   "nio/TCPStreamer": {
     "version": "0.0.1",
-    "description": "",
+    "description": "This block binds a streaming TCP Server socket on the selected IP address and port. Spawns thread to listen for new remote connections with a backlog queue of 1. Does not send responses to remote clients.",
+    "properties": {
+      "host": {
+        "title": "IP Address",
+        "type": "StringType",
+        "description": "Host address to start a server on",
+        "default": "127.0.0.1"
+      },
+      "port": {
+        "title": "Port",
+        "type": "IntType",
+        "description": "Host port to start a server on",
+        "default": 50001
+      }
+    },
     "inputs": {},
-    "outputs": {},
-    "properties": {},
-    "commands": {}
+    "outputs": {
+      "default": {
+        "description": "Notifies one signal for each received packet (up to 1024 bytes)."
+      }
+    },
+    "commands": {
+      "current_connections": {
+        "description": "List current connections",
+        "params": {}
+      }
+    }
   }
 }

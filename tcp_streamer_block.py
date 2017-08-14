@@ -37,7 +37,7 @@ class TCPStreamer(Block):
 
     def _recv(self, conn, addr, buffer_size):
         with conn:
-            while self._kill == False:
+            while not self._kill:
                 self.logger.debug('waiting for data from addr {}'.format(addr))
                 data = conn.recv(buffer_size)
                 self.logger.debug('received data {}'.format(data))
@@ -60,7 +60,7 @@ class TCPStreamer(Block):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((self.host(), self.port()))
             s.listen(1)
-            while self._kill == False:
+            while not self._kill:
                 self.logger.debug('listening for connections')
                 conn, addr = s.accept()
                 host = addr[0]
