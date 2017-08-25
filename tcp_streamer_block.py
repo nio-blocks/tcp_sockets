@@ -1,6 +1,6 @@
 import socket
 
-from nio.block.base import Block
+from nio import GeneratorBlock
 from nio.command import command
 from nio.properties import StringProperty, IntProperty, VersionProperty
 from nio.signal.base import Signal
@@ -8,7 +8,7 @@ from nio.util.threading.spawn import spawn
 
 
 @command("current_connections", method='_list_connections')
-class TCPStreamer(Block):
+class TCPStreamer(GeneratorBlock):
 
     host = StringProperty(title='IP Address', default='127.0.0.1')
     port = IntProperty(title='Port', default=50001)
