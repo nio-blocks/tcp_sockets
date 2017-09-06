@@ -2,6 +2,9 @@
   "nio/TCPAsynchClient": {
     "version": "0.0.1",
     "description": "On service start this block opens a client TCP streaming socket to the selected host address and port. Input signals will be sent to the remote host, while messaged received will be notified from the block.",
+    "categories": [
+      "Communication"
+    ],
     "properties": {
       "host": {
         "title": "IP Address",
@@ -48,6 +51,9 @@
   "nio/TCPClient": {
     "version": "0.0.1",
     "description": "This block opens a client TCP streaming socket on the selected ip address and port.",
+    "categories": [
+      "Communication"
+    ],
     "properties": {
       "expect_response": {
         "title": "Expect response?",
@@ -89,6 +95,9 @@
   "nio/TCPStreamer": {
     "version": "0.0.1",
     "description": "This block binds a streaming TCP Server socket on the selected IP address and port. Spawns thread to listen for new remote connections with a backlog queue of 1. Does not send responses to remote clients.",
+    "categories": [
+      "Communication"
+    ],
     "properties": {
       "host": {
         "title": "IP Address",
