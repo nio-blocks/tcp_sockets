@@ -1,7 +1,7 @@
 {
   "nio/TCPAsynchClient": {
     "version": "0.0.1",
-    "description": "On service start this block opens a client TCP streaming socket to the selected host address and port. Input signals will be sent to the remote host, while messaged received will be notified from the block.",
+    "description": "On service start this block opens a client TCP streaming socket to the selected host address and port. Input signals will be sent to the remote host, while messaged received will be emitted from the block.",
     "categories": [
       "Communication"
     ],
@@ -9,25 +9,25 @@
       "host": {
         "title": "IP Address",
         "type": "StringType",
-        "description": "Host address to connect to",
+        "description": "Host address to connect to.",
         "default": "127.0.0.1"
       },
       "message": {
         "title": "Message",
         "type": "Type",
-        "description": "Message to send to the connected server",
+        "description": "Message to send to the connected server.",
         "default": "GET / HTTP/1.1\n"
       },
       "port": {
         "title": "Port",
         "type": "IntType",
-        "description": "Host port to connect to",
+        "description": "Host port to connect to.",
         "default": 50001
       },
       "retry_options": {
         "title": "Retry Options",
         "type": "ObjectType",
-        "description": "Retry configuration for connection to the server",
+        "description": "Retry configuration for connection to the server.",
         "default": {
           "indefinite": false,
           "max_retry": 5,
@@ -50,7 +50,7 @@
   },
   "nio/TCPClient": {
     "version": "0.0.1",
-    "description": "This block opens a client TCP streaming socket on the selected ip address and port.",
+    "description": "This block opens a client TCP streaming socket on the selected IP address and port.",
     "categories": [
       "Communication"
     ],
@@ -58,25 +58,25 @@
       "expect_response": {
         "title": "Expect response?",
         "type": "BoolType",
-        "description": "Whether to expect a response from the server",
+        "description": "Whether to expect a response from the server.",
         "default": true
       },
       "host": {
         "title": "IP Address",
         "type": "StringType",
-        "description": "Host address to connect to",
+        "description": "Host address to connect to.",
         "default": "127.0.0.1"
       },
       "message": {
         "title": "Message",
         "type": "StringType",
-        "description": "Message to send to the connected server",
+        "description": "Message to send to the connected server.",
         "default": "GET / HTTP/1.1\n"
       },
       "port": {
         "title": "Port",
         "type": "IntType",
-        "description": "Host port to connect to",
+        "description": "Host port to connect to.",
         "default": 50001
       }
     },
@@ -102,25 +102,25 @@
       "host": {
         "title": "IP Address",
         "type": "StringType",
-        "description": "Host address to start a server on",
+        "description": "Host address to start a server on.",
         "default": "127.0.0.1"
       },
       "port": {
         "title": "Port",
         "type": "IntType",
-        "description": "Host port to start a server on",
+        "description": "Host port to start a server on.",
         "default": 50001
       }
     },
     "inputs": {},
     "outputs": {
       "default": {
-        "description": "Notifies one signal for each received packet (up to 1024 bytes)."
+        "description": "Emits one signal for each received packet (up to 1024 bytes)."
       }
     },
     "commands": {
       "current_connections": {
-        "description": "List current connections",
+        "description": "List current connections.",
         "params": {}
       }
     }
