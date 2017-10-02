@@ -1,7 +1,7 @@
 {
   "nio/TCPAsynchClient": {
     "version": "0.0.1",
-    "description": "On service start this block opens a client TCP streaming socket to the selected host address and port. Input signals will be sent to the remote host, while messaged received will be emitted from the block.",
+    "description": "On service start this block opens a client TCP streaming socket to the selected host address and port. Input signals will be sent to the remote host, while messages received will be emitted from the block.",
     "categories": [
       "Communication"
     ],
