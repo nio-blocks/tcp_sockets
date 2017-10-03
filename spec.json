@@ -9,25 +9,25 @@
       "host": {
         "title": "IP Address",
         "type": "StringType",
-        "description": "Host address to connect to",
+        "description": "Host address to connect to.",
         "default": "127.0.0.1"
       },
       "message": {
         "title": "Message",
         "type": "Type",
-        "description": "Message to send to the connected server",
+        "description": "Message to send to the connected server.",
         "default": "GET / HTTP/1.1\n"
       },
       "port": {
         "title": "Port",
         "type": "IntType",
-        "description": "Host port to connect to",
+        "description": "Host port to connect to.",
         "default": 50001
       },
       "retry_options": {
         "title": "Retry Options",
         "type": "ObjectType",
-        "description": "Retry configuration for connection to the server",
+        "description": "Retry configuration for connection to the server.",
         "default": {
           "indefinite": false,
           "max_retry": 5,
@@ -38,7 +38,7 @@
     },
     "inputs": {
       "default": {
-        "description": "Upon receipt of any input signal the evaluation of `message` will be sent to `host:port`."
+        "description": "Upon receipt of any input signal, the evaluation of `message` will be sent to `host:port`."
       }
     },
     "outputs": {
@@ -58,31 +58,31 @@
       "expect_response": {
         "title": "Expect response?",
         "type": "BoolType",
-        "description": "Whether to expect a response from the server",
+        "description": "Whether to expect a response from the server.",
         "default": true
       },
       "host": {
         "title": "IP Address",
         "type": "StringType",
-        "description": "Host address to connect to",
+        "description": "Host address to connect to.",
         "default": "127.0.0.1"
       },
       "message": {
         "title": "Message",
         "type": "StringType",
-        "description": "Message to send to the connected server",
+        "description": "Message to send to the connected server.",
         "default": "GET / HTTP/1.1\n"
       },
       "port": {
         "title": "Port",
         "type": "IntType",
-        "description": "Host port to connect to",
+        "description": "Host port to connect to.",
         "default": 50001
       }
     },
     "inputs": {
       "default": {
-        "description": "Upon receipt of any input signal this block will open a socket connection, send the message, and collect any response."
+        "description": "Upon receipt of any input signal, this block will open a socket connection, send the message, and collect any response."
       }
     },
     "outputs": {
@@ -102,13 +102,13 @@
       "host": {
         "title": "IP Address",
         "type": "StringType",
-        "description": "Host address to start a server on",
+        "description": "Host address to start a server on.",
         "default": "127.0.0.1"
       },
       "port": {
         "title": "Port",
         "type": "IntType",
-        "description": "Host port to start a server on",
+        "description": "Host port to start a server on.",
         "default": 50001
       }
     },
@@ -120,7 +120,7 @@
     },
     "commands": {
       "current_connections": {
-        "description": "List current connections",
+        "description": "List current connections.",
         "params": {}
       }
     }
