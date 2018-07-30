@@ -38,7 +38,7 @@
     },
     "inputs": {
       "default": {
-        "description": "Upon receipt of any input signal the evaluation of `message` will be sent to `host:port`."
+        "description": "Upon receipt of any input signal, the evaluation of `message` will be sent to `host:port`."
       }
     },
     "outputs": {
@@ -82,7 +82,7 @@
     },
     "inputs": {
       "default": {
-        "description": "Upon receipt of any input signal this block will open a socket connection, send the message, and collect any response."
+        "description": "Upon receipt of any input signal, this block will open a socket connection, send the message, and collect any response."
       }
     },
     "outputs": {
